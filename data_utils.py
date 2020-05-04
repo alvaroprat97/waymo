@@ -1,11 +1,13 @@
 import os
-import pickle
-
 import torch
 from torch.utils.data import Dataset
+import pickle
 import tensorflow.compat.v1 as tf
 
 CAMERAS = ["FRONT", "FRONT_LEFT", "SIDE_LEFT", "FRONT_RIGHT", "SIDE_RIGHT"]
+BIG_X = 1280
+SMALL_X = 886
+Y_DIM = 1920
 
 
 class WaymoDataset(Dataset):
@@ -25,7 +27,7 @@ class WaymoDataset(Dataset):
         # Create list of all filepaths
         self.filepaths = []
         root_path = os.getcwd() + f"/data/{scope}"
-        for cam in cameras:
+        for cam in CAMERAS:
             cam_filepaths = os.listdir(f"{root_path}/{cam}")
             self.filepaths += [f"{root_path}/{cam}/{i}" for i in cam_filepaths]
 
@@ -40,17 +42,38 @@ class WaymoDataset(Dataset):
 
     def __getitem__(self, item):
 
-        sample = load_pickle(self.filepaths[item])
+        fpath = self.filepaths[item]
+        sample = load_pickle(fpath)
         img = torch.tensor(tf.image.decode_jpeg(sample["image"]).numpy())
 
+        cam_type = fpath.split("/")[5]  # FRONT, SIDE_LEFT etc
+        labels = scale_labels(sample["labels"].labels, cam_type)
         if self.heatmaps:
-            labels = convert_to_heatmap(sample["labels"].labels)
-        else:
-            labels = sample["labels"].labels
+            labels = convert_to_heatmap(labels)
+
         return {"img": img, "labels": labels}
 
     def get_context(self, item):
-        return load_pickle(self.filepaths[item]["context"])
+        return self.img_names[item]
+
+
+def scale_labels(labels, cam="FRONT"):
+    if cam in ["SIDE_LEFT", "SIDE_RIGHT"]:
+        x_dim = BIG_X
+    else:
+        x_dim = SMALL_X
+    res = {i + 1: [] for i in range(4)}
+    for i in labels:
+        res[i.type].append(
+            {
+                "id": i.id,
+                "x": i.box.center_x / x_dim,
+                "y": i.box.center_y / Y_DIM,
+                "width": i.box.width / x_dim,
+                "length": i.box.length / Y_DIM,
+            }
+        )
+    return res
 
 
 def load_pickle(fpath):
@@ -60,4 +83,4 @@ def load_pickle(fpath):
 
 def convert_to_heatmap(img_dims, labels):
     # TODO
-    return
+    pass
