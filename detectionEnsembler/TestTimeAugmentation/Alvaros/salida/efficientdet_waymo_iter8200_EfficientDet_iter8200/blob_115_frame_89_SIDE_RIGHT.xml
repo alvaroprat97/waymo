@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<annotation>
+  <folder>images</folder>
+  <filename>blob_115_frame_89_SIDE_RIGHT</filename>
+  <path>/home/project_x/ensembler/ensembleObjectDetection/TestTimeAugmentation/Alvaros/salida/efficientdet_waymo_iter8200_EfficientDet_iter8200/blob_115_frame_89_SIDE_RIGHT.xml</path>
+  <source>
+    <database>Unknown</database>
+  </source>
+  <size>
+    <width>1920</width>
+    <height>886</height>
+    <depth>3</depth>
+  </size>
+  <segmented>0</segmented>
+  <object>
+    <name>vehicle</name>
+    <confidence>0.12944576</confidence>
+    <pose>Unspecified</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <bndbox>
+      <xmin>1273</xmin>
+      <ymin>864</ymin>
+      <xmax>1909</xmax>
+      <ymax>885</ymax>
+    </bndbox>
+  </object>
+  <object>
+    <name>vehicle</name>
+    <confidence>0.10663334</confidence>
+    <pose>Unspecified</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <bndbox>
+      <xmin>4</xmin>
+      <ymin>891</ymin>
+      <xmax>536</xmax>
+      <ymax>885</ymax>
+    </bndbox>
+  </object>
+</annotation>

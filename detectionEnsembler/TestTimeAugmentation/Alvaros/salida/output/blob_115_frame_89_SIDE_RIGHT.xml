@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<annotation>
+  <folder>images</folder>
+  <filename>blob_115_frame_89_SIDE_RIGH</filename>
+  <path>/blob_115_frame_89_SIDE_RIGHT</path>
+  <source>
+    <database>Unknown</database>
+  </source>
+  <size>
+    <width>1920.0</width>
+    <height>886.0</height>
+    <depth>3</depth>
+  </size>
+  <segmented>0</segmented>
+</annotation>
