@@ -20,25 +20,20 @@ class WaymoDataset(Dataset):
         scope="training",
         root_dir="/home/project_x/data/",
         cameras=CAMERAS,
-        exclusions=None,
         transform=None,
         mod='fast_rcnn',
     ):
 
         self.transform = transform
         self.mod = mod
-        # Create list of all filepaths
-#         self.filepaths = []
-#         root_path = root_dir + scope
-#         for cam in cameras:
-#             cam_filepaths = os.listdir(f"{root_path}/{cam}")
-#             self.filepaths += [f"{root_path}/{cam}/{i}" for i in cam_filepaths]
-
         self.filepaths = []
         root_path = root_dir + scope
+        
         if self.mod == 'fast_rcnn':
             for cam in cameras:
+                print(root_path + f'/{cam}_with_objects.pickle')
                 self.filepaths += load_pickle(root_path + f'/{cam}_with_objects.pickle')
+                
 
     def __len__(self):
         return len(self.filepaths)
@@ -52,15 +47,19 @@ class WaymoDataset(Dataset):
         sample = {'img': img, 'annot': annot}
         if self.transform:
             sample = self.transform(sample)
-        sample = {'raw':raw_sample, 'id':fpath.split('/')[-1], **sample}
-        
+#         sample = {'raw':raw_sample, 'id':fpath.split('/')[-1], **sample}
+        sample = {'raw':raw_sample, 'id':fpath, **sample}
+
         img = torch.as_tensor(sample['img'].float()).permute(2, 0, 1)
         boxes = torch.as_tensor(sample['annot'][:,:4], dtype=torch.float32)
+        
         target = {}
         target['boxes'] = boxes
         target['labels'] = torch.as_tensor(annot[:,-1], dtype=torch.int64)
         target['area'] = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
         target['image_id'] = sample['id']
+        target['scale'] = torch.as_tensor(sample['scale'], dtype=torch.float32)
+        
         return img, target
 
     def get_cam_type(self, item):
