@@ -3,6 +3,6 @@ google-api-core==1.17.0
 google-cloud-storage==1.27.0
 numpy==1.18.2
 matplotlib==3.2.1
-tensorflow==1.14.0
+tensorflow==2.6.4
 torch==1.4.0
 waymo-open-dataset-tf-2-1-0==1.2.0
